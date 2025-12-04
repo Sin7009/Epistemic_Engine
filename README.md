@@ -15,46 +15,56 @@
 Система работает как направленный граф (DAG). Запрос проходит через классификатор, "лечебные" модули, параллельную генерацию и синтез.
 
 ```mermaid
-graph TD
-    %% Палитра Sberbank (User Style)
-    classDef input fill:#FAFAF1,stroke:#333,stroke-width:1px,color:#000;
-    classDef orchestrator fill:#00703B,stroke:#fff,stroke-width:2px,color:#fff; 
-    classDef support fill:#429538,stroke:#fff,stroke-width:1px,color:#fff;
-    classDef solvers fill:#7CC344,stroke:#333,stroke-width:1px,color:#000;
-    classDef synthesis fill:#E3E6A1,stroke:#333,stroke-width:1px,color:#000;
+flowchart TB
+ subgraph subGraph0["ZONE 1: ROUTING & CONTEXT"]
+        Orch{"Orchestrator"}
+        Solvers("Параллельный запуск")
+        Therapist["Терапевт<br><i>Снятие стресса</i>"]
+        Consig["Консильери<br><i>Оценка рисков</i>"]
+        PostMortem["Post-Mortem<br><i>Анализ ошибок</i>"]
+  end
+ subgraph subGraph1["ZONE 2: COGNITIVE PARALLELISM"]
+        Triz["ТРИЗ Агент<br><i>ProblemType: DESIGN</i>"]
+        Sys["Системный Аналитик<br><i>ProblemType: DIAGNOSIS</i>"]
+        Crit["Критик / Риски<br><i>ProblemType: DIAGNOSIS</i>"]
+  end
+ subgraph subGraph2["ZONE 3: VERIFICATION & SYNTHESIS"]
+        FactCheck["Fact Checker<br><i>DuckDuckGo Search</i>"]
+        Synthesizer("Синтезатор Решения")
+  end
+    User("Вход: Запрос") --> Orch
+    Orch -- CHITCHAT --> Output("Финальный Ответ")
+    Orch -. SOLVER .-> Solvers
+    Orch -. THERAPIST .-> Therapist
+    Orch -. CONSIGLIERE .-> Consig
+    Output == RETRY ==> PostMortem
+    Therapist --> Solvers
+    Consig --> Solvers
+    PostMortem --> Solvers
+    Solvers --> Triz & Sys & Crit
+    Triz --> FactCheck
+    Sys --> FactCheck
+    Crit --> FactCheck
+    FactCheck --> Synthesizer
+    Synthesizer --> Output
 
-    User(Вход: Запрос) --> Orch{Orchestrator}
-
-    subgraph "ZONE 1: ROUTING & CONTEXT"
-        Orch -- "CHITCHAT" --> End((Конец))
-        Orch -- "SOLVER" --> Solvers
-        Orch -- "THERAPIST" --> Therapist[Терапевт<br><i>Снятие стресса</i>]
-        Orch -- "CONSIGLIERE" --> Consig[Консильери<br><i>Оценка рисков</i>]
-        Orch -- "RETRY" --> PostMortem[Post-Mortem<br><i>Анализ ошибок</i>]
-        
-        Therapist --> Solvers
-        Consig --> Solvers
-        PostMortem --> Solvers
-    end
-
-    subgraph "ZONE 2: COGNITIVE PARALLELISM"
-        Solvers(Параллельный запуск) --> Triz[ТРИЗ Агент<br><i>ProblemType: DESIGN</i>]
-        Solvers --> Sys[Системный Аналитик<br><i>ProblemType: DIAGNOSIS</i>]
-        Solvers --> Crit[Критик / Риски<br><i>ProblemType: DIAGNOSIS</i>]
-    end
-
-    subgraph "ZONE 3: VERIFICATION & SYNTHESIS"
-        Triz & Sys & Crit --> FactCheck[Fact Checker<br><i>DuckDuckGo Search</i>]
-        FactCheck --> Synthesizer(Синтезатор Решения)
-    end
-
-    Synthesizer --> Output(Финальный Ответ)
-
-    class User,Output input;
-    class Orch orchestrator;
-    class Therapist,Consig,PostMortem support;
-    class Triz,Sys,Crit,Solvers solvers;
-    class FactCheck,Synthesizer synthesis;
+     Orch:::orchestrator
+     Solvers:::solvers
+     Therapist:::support
+     Consig:::support
+     PostMortem:::support
+     Triz:::solvers
+     Sys:::solvers
+     Crit:::solvers
+     FactCheck:::synthesis
+     Synthesizer:::synthesis
+     User:::input
+     Output:::input
+    classDef input fill:#FAFAF1,stroke:#333,stroke-width:1px,color:#000
+    classDef orchestrator fill:#00703B,stroke:#fff,stroke-width:2px,color:#fff 
+    classDef support fill:#429538,stroke:#fff,stroke-width:1px,color:#fff
+    classDef solvers fill:#7CC344,stroke:#333,stroke-width:1px,color:#000
+    classDef synthesis fill:#E3E6A1,stroke:#333,stroke-width:1px,color:#000
 ````
 
 ### 🧩 Ключевые компоненты
